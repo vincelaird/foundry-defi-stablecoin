@@ -505,7 +505,8 @@ contract DSCEngineTest is Test {
 
     function testGetSepoliaEthConfig() public {
         // skip test if no private key is provided
-        if (vm.envUint("PRIVATE_KEY") == 0) {
+        uint256 privateKey = vm.envOr("PRIVATE_KEY", uint256(0));
+        if (privateKey == 0) {
             return;
         }
         vm.chainId(11155111); // Sepolia chain ID
