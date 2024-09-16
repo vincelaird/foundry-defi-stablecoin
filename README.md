@@ -1,66 +1,71 @@
-## Foundry
+# Decentralized Stablecoin (DSC)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A decentralized stablecoin system built on Ethereum.
 
-Foundry consists of:
+## Features
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+1. Relative Stability: Pegged to $1.00 USD
+   - Utilizes Chainlink Price Feeds for accurate price data
+   - Allows exchange of ETH & BTC for DSC
 
-## Documentation
+2. Stability Mechanism (Minting): Algorithmic and Decentralized
+   - Users can only mint DSC with sufficient collateral
 
-https://book.getfoundry.sh/
+3. Collateral: Exogenous (Crypto)
+   - Supported collateral:
+     - wETH (Wrapped Ether)
+     - wBTC (Wrapped Bitcoin)
 
-## Usage
+## Key Components
 
-### Build
+- DSCEngine: Core contract managing collateral, minting, and liquidations
+- DecentralizedStableCoin: ERC20 token contract for DSC
+- HelperConfig: Configuration contract for different network settings
 
-```shell
-$ forge build
-```
+## Testing
 
-### Test
+Comprehensive unit and fuzz tests are included to ensure the system's robustness:
 
-```shell
-$ forge test
-```
+- `test/unit/DSCEngineTest.t.sol`: Tests for DSCEngine
+- `test/unit/DecentralizedStableCoinTest.t.sol`: Tests for DecentralizedStableCoin
+- `test/fuzz/Handler.t.sol`: Fuzz tests for DSCEngine
+- `test/fuzz/Invariants.t.sol`: Invariant tests for DSCEngine
 
-### Format
+## Test Coverage
 
-```shell
-$ forge fmt
-```
+| File                                    | % Lines          | % Statements     | % Branches     | % Funcs         |
+|-----------------------------------------|------------------|------------------|----------------|-----------------|
+| script/DeployDSC.s.sol                  | 100.00% (11/11)  | 100.00% (14/14)  | 100.00% (0/0)  | 100.00% (1/1)   |
+| script/HelperConfig.s.sol               | 85.71% (12/14)   | 88.24% (15/17)   | 66.67% (2/3)   | 66.67% (2/3)    |
+| src/DSCEngine.sol                       | 96.77% (90/93)   | 95.41% (104/109) | 63.64% (7/11)  | 100.00% (31/31) |
+| src/DecentralizedStableCoin.sol         | 100.00% (9/9)    | 100.00% (13/13)  | 100.00% (4/4)  | 100.00% (3/3)   |
+| src/libraries/OracleLib.sol             | 100.00% (7/7)    | 100.00% (7/7)    | 100.00% (1/1)  | 100.00% (1/1)   |
+| test/fuzz/Handler.t.sol                 | 98.39% (61/62)   | 97.37% (74/76)   | 87.50% (7/8)   | 100.00% (21/21) |
+| test/mocks/FailingTransferFromToken.sol | 100.00% (2/2)    | 100.00% (2/2)    | 100.00% (0/0)  | 100.00% (1/1)   |
+| test/mocks/MockV3Aggregator.sol         | 100.00% (14/14)  | 100.00% (15/15)  | 100.00% (0/0)  | 100.00% (4/4)   |
+| Total                                   | 97.17% (206/212) | 96.44% (244/253) | 77.78% (21/27) | 98.46% (64/65)  |
 
-### Gas Snapshots
+## Smart Contract Audit Preparation
 
-```shell
-$ forge snapshot
-```
+1. Proper Oracle Usage
+   - Implemented fail-safes for price feed issues
+   - Staleness checks for price data
 
-### Anvil
+2. Extensive Test Coverage
+   - Unit tests for all core functions
+   - Fuzz tests for invariant checking
 
-```shell
-$ anvil
-```
+3. Key Invariants
+   - Protocol must always be overcollateralized
+   - User health factors are accurately calculated and enforced
 
-### Deploy
+## Setup and Deployment
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+1. Clone the repository
+2. Install dependencies: `forge install`
+3. Run tests: `forge test`
+4. Deploy: `forge script script/DeployDSC.s.sol:DeployDSC --rpc-url $RPC_URL --account $ACCOUNT`
 
-### Cast
+## License
 
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This project is licensed under the MIT License.
